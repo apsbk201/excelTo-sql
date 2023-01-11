@@ -204,3 +204,8 @@ insertTable_vender()
 insertTable_customer()
 insertTable_product()
 insertTable_invoice()
+
+def dropTable(name):
+    sql = f'DROP TABLE {name}'
+    cur.execute(sql)
+    print(f'{sql} Successfully')

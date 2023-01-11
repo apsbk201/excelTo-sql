@@ -135,8 +135,15 @@ def insertTable_employee():
         employee = emp.to_records(index=False)
         employee = list(employee)
         for df in employee:
+            #9-10
+            dateIn = str(df[9])
+            dateOut= str(df[10])
+            dateIn = dateIn.split('T')
+            dateOut= dateOut.split('T')
+            if dateOut == 'Na' or dateOut == 'nan':
+                dateOut[0] = ' '
             sql = 'INSERT INTO employee (fname,lname,address,email,tel,contact,status,position,permistion,dateIn,dateOut,uname,password,hint) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
-            value = (str(df[0]),str(df[1]),str(df[2]), str(df[3]),str(df[4]),str(df[5]),str(df[6]),str(df[7]),str(df[8]),str(df[9]),str(df[10]),str(df[11]),str(df[12]),str(df[13]))
+            value = (str(df[0]),str(df[1]),str(df[2]), str(df[3]),str(df[4]),str(df[5]),str(df[6]),str(df[7]),str(df[8]),dateIn[0],dateOut[0],str(df[11]),str(df[12]),str(df[13]))
             cur.execute(sql,value)
         print('employee Done')
         conn.commit()
@@ -178,8 +185,24 @@ def insertTable_product():
         product = pro.to_records(index=False)
         product = list(product)
         for df in product:
+            #4-5
+            mfg = str(df[4])
+            exp = str(df[5])
+            mfg = mfg.split('T')
+            exp = exp.split('T')
+            if mfg == 'Na' or mfg == 'nan':
+                mfg[0] = ' '
+            if exp == 'Na' or exp == 'nan':
+                exp[0] = ' '
+            #7-8
+            dateIn = str(df[7])
+            dateOut= str(df[8])
+            dateIn = dateIn.split('T')
+            dateOut= dateOut.split('T')
+            if dateOut == 'Na' or dateOut == 'nan':
+                dateOut[0] = ''
             sql = "INSERT INTO product (model,name,serial,unit,mfg,exp,lot,dateIn,dateOut,venderId,venderSn,price,quantity,out,balance,comment)VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
-            value = (str(df[0]),str(df[1]),str(df[2]), str(df[3]),str(df[4]),str(df[5]),str(df[6]),str(df[7]),str(df[8]),str(df[9]),str(df[10]),str(df[11]),str(df[12]),str(df[13]),str(df[14]),str(df[15]))
+            value = (str(df[0]),str(df[1]),str(df[2]), str(df[3]),mfg[0],exp[0],str(df[6]),dateIn[0],dateOut[0],str(df[9]),str(df[10]),str(df[11]),str(df[12]),str(df[13]),str(df[14]),str(df[15]))
             cur.execute(sql,value)
         print('product Done')
         conn.commit()
@@ -191,21 +214,34 @@ def insertTable_invoice():
         invoice = inv.to_records(index=False)
         invoice = list(invoice)
         for df in invoice:
+            #0-6
+            date = str(df[0])
+            date = date.split('T')
+            if date == 'Na' or date == 'nan':
+                date[0] = ' '
+            dateOut= str(df[6])
+            dateOut= dateOut.split('T')
+            if dateOut[0] == 'Na' or dateOut == 'nan':
+                dateOut[0] = ' '
             sql = "INSERT INTO invoice (date,invoiceNumber,productId,quantity,unit,price,dateOut,waranty,service,customerId,saleId,comment)VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
-            value = (str(df[0]),str(df[1]),str(df[2]), str(df[3]),str(df[4]),str(df[5]),str(df[6]),str(df[7]),str(df[8]),str(df[9]),str(df[10]),str(df[11]))
+            value = (date[0],str(df[1]),str(df[2]), str(df[3]),str(df[4]),str(df[5]),dateOut[0],str(df[7]),str(df[8]),str(df[9]),str(df[10]),str(df[11]))
             cur.execute(sql,value)
         print('invoice Done')
         conn.commit()
     except Exception as e:
         print(e)
 
+def dropTable(name):
+    sql = f'DROP TABLE {name}'
+    cur.execute(sql)
+    print(f'{sql} Successfully')
+
+table_name = ('employee','vender','customer','product','invoice')
+
+#for i in range(len(table_name)):
+#    dropTable(table_name[i])
 insertTable_employee()
 insertTable_vender()
 insertTable_customer()
 insertTable_product()
 insertTable_invoice()
-
-def dropTable(name):
-    sql = f'DROP TABLE {name}'
-    cur.execute(sql)
-    print(f'{sql} Successfully')
